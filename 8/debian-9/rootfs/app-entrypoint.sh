@@ -25,6 +25,9 @@ if [[ "$1" == "nami" && "$2" == "start" ]] || [[ "$1" == "httpd" ]]; then
   
 	ln -s /bitnami/drupal/vendor /opt/bitnami/drupal/vendor
 	echo Created vendor symlink.;
+
+	RUN ln -s /bitnami/drupal/libraries /opt/bitnami/drupal/libraries
+	echo Created libraries symlink.;
   
 	info "Starting drupal... "
 fi
