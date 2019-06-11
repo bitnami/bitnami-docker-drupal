@@ -57,40 +57,11 @@ Running Drupal with a database server is the recommended way. You can either use
 
 ### Run the application using Docker Compose
 
-This is the recommended way to run Drupal. You can use the following `docker-compose.yml` template:
+In the main folder of this repository, you can find a functional [docker-compose.yaml](https://github.com/bitnami/bitnami-docker-drupal/blob/master/docker-compose.yml), you can run the application using it:
 
-```yaml
-version: '2'
-
-services:
-  mariadb:
-    image: 'bitnami/mariadb:latest'
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_USER=bn_drupal
-      - MARIADB_DATABASE=bitnami_drupal
-    volumes:
-      - 'mariadb_data:/bitnami'
-  drupal:
-    image: 'bitnami/drupal:8'
-    environment:
-      - MARIADB_HOST=mariadb
-      - MARIADB_PORT_NUMBER=3306
-      - DRUPAL_DATABASE_USER=bn_drupal
-      - DRUPAL_DATABASE_NAME=bitnami_drupal
-      - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - 'drupal_data:/bitnami'
-    depends_on:
-      - mariadb
-volumes:
-  mariadb_data:
-    driver: local
-  drupal_data:
-    driver: local
+```bash
+$ curl -sSL https://raw.githubusercontent.com/bitnami/bitnami-docker-drupal/master/docker-compose.yml > docker-compose.yml
+$ docker-compose up -d
 ```
 
 ### Run the application manually
@@ -143,33 +114,18 @@ To avoid inadvertent removal of these volumes you can [mount host directories as
 
 ### Mount host directories as data volumes with Docker Compose
 
-This requires a minor change to the `docker-compose.yml` template previously shown:
+This requires a minor change to the [`docker-compose.yml`](https://github.com/bitnami/bitnami-docker-drupal/blob/master/docker-compose.yml) file present in this repository:
 
-```yaml
-version: '2'
+```diff
+        - MARIADB_DATABASE=bitnami_drupal
+    volumes:
+-       - 'mariadb_data:/bitnami'
++       - 'path/to/mariadb-persistence:/bitnami'
 
-services:
-  mariadb:
-    image: 'bitnami/mariadb:latest'
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_USER=bn_drupal
-      - MARIADB_DATABASE=bitnami_drupal
+        - ALLOW_EMPTY_PASSWORD=yes
     volumes:
-      - '/path/to/mariadb-persistence:/bitnami'
-  drupal:
-    image: 'bitnami/drupal:latest'
-    depends_on:
-      - mariadb
-    ports:
-      - '80:80'
-      - '443:443'
-    environment:
-      - DRUPAL_DATABASE_USER=bn_drupal
-      - DRUPAL_DATABASE_NAME=bitnami_drupal
-      - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - '/path/to/drupal-persistence:/bitnami'
+-       - 'drupal_data:/bitnami'
++       - '/path/to/drupal-persistence:/bitnami'
 ```
 
 ### Mount host directories as data volumes using the Docker command line
@@ -342,40 +298,18 @@ ENV APACHE_HTTPS_PORT_NUMBER=8143
 EXPOSE 8181 8143
 ```
 
-Based on the extended image, you can use a Docker Compose file like the one below to add other features:
+Based on the extended image, you can use a Docker Compose file mentioned above, you can do some modifications in order to add other features, in this case building the image locally instead of pulling the published one and using the new environment variables:
 
-```yaml
-version: '2'
-
-services:
-  mariadb:
-    image: 'bitnami/mariadb:10.3'
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_USER=bn_drupal
-      - MARIADB_DATABASE=bitnami_drupal
-    volumes:
-      - 'mariadb_data:/bitnami'
+```diff
   drupal:
-    build: .
-    environment:
-      - MARIADB_HOST=mariadb
-      - MARIADB_PORT_NUMBER=3306
-      - DRUPAL_DATABASE_USER=bn_drupal
-      - DRUPAL_DATABASE_NAME=bitnami_drupal
-      - ALLOW_EMPTY_PASSWORD=yes
+-    image: 'bitnami/drupal:8'
++    build: .
+
     ports:
-      - '80:8181'
-      - '443:8143'
-    volumes:
-      - 'drupal_data:/bitnami'
-    depends_on:
-      - mariadb
-volumes:
-  mariadb_data:
-    driver: local
-  drupal_data:
-    driver: local
+-       - '80:80'
+-       - '443:443'
++      - '80:8181'
++      - '443:8143'
 ```
 
 # Notable Changes
