@@ -442,6 +442,22 @@ drupal_set_database_ssl_settings() {
 EOF
 }
 
+drupal_set_database_settings() {
+    cat >>"$DRUPAL_CONF_FILE" <<EOF
+\$databases['default']['default'] = array ( // Database block with SSL support
+  'database' => '${DRUPAL_DATABASE_NAME}',
+  'username' => '${DRUPAL_DATABASE_USER}',
+  'password' => '${DRUPAL_DATABASE_PASSWORD}',
+  'prefix' => '',
+  'host' => '${DRUPAL_DATABASE_HOST}',
+  'port' => '${DRUPAL_DATABASE_PORT_NUMBER}',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+EOF
+}
+
+
 ########################
 # Drupal remove duplicated database block from settings file
 # Globals:
