@@ -77,6 +77,7 @@ export DRUPAL_PROFILE="${DRUPAL_PROFILE:-standard}" # only used during the first
 export DRUPAL_SITE_NAME="${DRUPAL_SITE_NAME:-My blog}" # only used during the first initialization
 export DRUPAL_SKIP_BOOTSTRAP="${DRUPAL_SKIP_BOOTSTRAP:-}" # only used during the first initialization
 export DRUPAL_ENABLE_MODULES="${DRUPAL_ENABLE_MODULES:-}" # only used during the first initialization
+export DRUPAL_CONFIG_DIR="${DRUPAL_CONFIG_DIR:-sites/default/files/config}"
 
 # Drupal credentials
 export DRUPAL_USERNAME="${DRUPAL_USERNAME:-user}" # only used during the first initialization

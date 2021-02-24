@@ -147,11 +147,11 @@ drupal_initialize() {
             drupal_flush_cache
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
-			mkdir $BITNAMI_ROOT_DIR/drupal/sites/default/files/sync
-			drupal_set_database_settings
-			drupal_conf_set "\$settings['config_sync_directory']" "files/sync" yes
+			mkdir "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_DIR"
+			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_DIR" no
 			drupal_conf_set "\$settings['hash_salt']" "helloworld" yes
-			# cat /opt/bitnami/drupal/sites/default/settings.php
+			drupal_set_database_settings
+			cat /opt/bitnami/drupal/sites/default/settings.php
             drupal_update_database
         fi
 
