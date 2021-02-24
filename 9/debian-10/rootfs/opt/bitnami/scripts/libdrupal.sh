@@ -147,10 +147,10 @@ drupal_initialize() {
             drupal_flush_cache
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
+			drupal_set_database_settings
 			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_DIR"
 			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_DIR" no
-			drupal_conf_set "\$settings['hash_salt']" "helloworld" yes
-			drupal_set_database_settings
+			drupal_set_hash_salt
 			cat /opt/bitnami/drupal/sites/default/settings.php
             drupal_update_database
         fi
@@ -287,6 +287,14 @@ drupal_site_install() {
 
 drupal_create_config_directory() {
 	debug_execute mkdir "$@"
+}
+
+drupal_set_hash_salt() {
+	if [[ -z $DRUPAL_HASH_SALT ]]; then
+		drupal_conf_set "\$settings['hash_salt']" "$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")" no
+	else
+		drupal_conf_set "\$settings['hash_salt']" "$DRUPAL_HASH_SALT" no
+	fi
 }
 
 ########################
