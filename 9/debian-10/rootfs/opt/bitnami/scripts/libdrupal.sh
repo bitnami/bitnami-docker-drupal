@@ -147,7 +147,7 @@ drupal_initialize() {
             drupal_flush_cache
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
-			mkdir "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_DIR"
+			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_DIR"
 			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_DIR" no
 			drupal_conf_set "\$settings['hash_salt']" "helloworld" yes
 			drupal_set_database_settings
@@ -283,6 +283,10 @@ drupal_site_install() {
     if am_i_root; then
         configure_permissions_ownership "$DRUPAL_CONF_FILE" -u "root" -g "$WEB_SERVER_DAEMON_USER" -f "644"
     fi
+}
+
+drupal_create_config_directory() {
+	debug_execute mkdir "$@"
 }
 
 ########################
