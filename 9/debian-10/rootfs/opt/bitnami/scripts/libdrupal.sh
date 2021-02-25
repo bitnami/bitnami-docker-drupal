@@ -151,7 +151,6 @@ drupal_initialize() {
 			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_DIR"
 			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_DIR" no
 			drupal_set_hash_salt
-			cat /opt/bitnami/drupal/sites/default/settings.php
             drupal_update_database
         fi
 
