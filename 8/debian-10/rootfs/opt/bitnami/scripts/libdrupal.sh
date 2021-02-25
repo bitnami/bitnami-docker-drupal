@@ -147,6 +147,11 @@ drupal_initialize() {
             drupal_flush_cache
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
+			drupal_set_database_settings
+			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_DIR"
+			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_DIR" no
+			drupal_set_hash_salt
+			cat /opt/bitnami/drupal/sites/default/settings.php
             drupal_update_database
         fi
 
@@ -278,6 +283,18 @@ drupal_site_install() {
     if am_i_root; then
         configure_permissions_ownership "$DRUPAL_CONF_FILE" -u "root" -g "$WEB_SERVER_DAEMON_USER" -f "644"
     fi
+}
+
+drupal_create_config_directory() {
+	debug_execute mkdir "$@"
+}
+
+drupal_set_hash_salt() {
+	if [[ -z $DRUPAL_HASH_SALT ]]; then
+		drupal_conf_set "\$settings['hash_salt']" "$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")" no
+	else
+		drupal_conf_set "\$settings['hash_salt']" "$DRUPAL_HASH_SALT" no
+	fi
 }
 
 ########################
@@ -438,6 +455,21 @@ drupal_set_database_ssl_settings() {
     PDO::MYSQL_ATTR_SSL_CA => '${DRUPAL_DATABASE_TLS_CA_FILE}',
     PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => 0
   )
+);
+EOF
+}
+
+drupal_set_database_settings() {
+    cat >>"$DRUPAL_CONF_FILE" <<EOF
+\$databases['default']['default'] = array ( // Database block with SSL support
+  'database' => '${DRUPAL_DATABASE_NAME}',
+  'username' => '${DRUPAL_DATABASE_USER}',
+  'password' => '${DRUPAL_DATABASE_PASSWORD}',
+  'prefix' => '',
+  'host' => '${DRUPAL_DATABASE_HOST}',
+  'port' => '${DRUPAL_DATABASE_PORT_NUMBER}',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
 );
 EOF
 }
