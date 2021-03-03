@@ -148,8 +148,8 @@ drupal_initialize() {
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
 			drupal_set_database_settings
-			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_DIR"
-			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_DIR" no
+			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
+			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_SYNC_DIR" no
 			drupal_set_hash_salt
             drupal_update_database
         fi
