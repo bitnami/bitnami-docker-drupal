@@ -148,7 +148,9 @@ drupal_initialize() {
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
 			drupal_set_database_settings
+			echo "Before func $DRUPAL_CONFIG_SYNC_DIR"
 			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
+			echo "After func $DRUPAL_CONFIG_SYNC_DIR"
 			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_SYNC_DIR" no
 			drupal_set_hash_salt
             drupal_update_database
@@ -285,7 +287,16 @@ drupal_site_install() {
 }
 
 drupal_create_config_directory() {
-	debug_execute mkdir "$@"
+	if [[ -z $DRUPAL_CONFIG_SYNC_DIR ]]; then
+		# In order to use Drush commands we need to have a value for
+		# config_sync_directory or it will throw an error so we add a
+		# temp value here first
+		drupal_conf_set "\$settings['config_sync_directory']" "temp" no
+		DRUPAL_CONFIG_SYNC_DIR="sites/default/files/config_$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")"
+		debug_execute mkdir "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
+	else
+		debug_execute mkdir "$@"
+	fi
 }
 
 drupal_set_hash_salt() {
