@@ -285,8 +285,18 @@ drupal_site_install() {
 }
 
 drupal_create_config_directory() {
-	debug_execute mkdir "$@"
+	if [[ -z $DRUPAL_CONFIG_SYNC_DIR ]]; then
+		# In order to use Drush commands we need to have a value for
+		# config_sync_directory or it will throw an error so we add a
+		# temp value here first
+		drupal_conf_set "\$settings['config_sync_directory']" "temp" no
+		DRUPAL_CONFIG_SYNC_DIR="sites/default/files/config_$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")"
+		debug_execute mkdir "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
+	else
+		debug_execute mkdir "$@"
+	fi
 }
+
 
 drupal_set_hash_salt() {
 	if [[ -z $DRUPAL_HASH_SALT ]]; then
