@@ -147,7 +147,11 @@ drupal_initialize() {
             drupal_flush_cache
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
-			drupal_set_database_settings
+			if is_empty_value "$DRUPAL_DATABASE_TLS_CA_FILE"; then
+				drupal_set_database_settings
+			else
+				drupal_set_database_ssl_settings
+			fi
 			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
 			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_SYNC_DIR" no
 			drupal_set_hash_salt
