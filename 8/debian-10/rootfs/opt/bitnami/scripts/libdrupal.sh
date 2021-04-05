@@ -143,8 +143,6 @@ drupal_initialize() {
                 info "Configuring SMTP"
                 drupal_configure_smtp
             fi
-            info "Flushing Drupal cache"
-            drupal_flush_cache
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
 			if is_empty_value "$DRUPAL_DATABASE_TLS_CA_FILE"; then
@@ -157,6 +155,9 @@ drupal_initialize() {
 			drupal_set_hash_salt
             drupal_update_database
         fi
+
+		info "Flushing Drupal cache"
+		drupal_flush_cache
 
         info "Persisting Drupal installation"
         persist_app "$app_name" "$DRUPAL_DATA_TO_PERSIST"
