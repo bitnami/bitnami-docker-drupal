@@ -151,7 +151,7 @@ drupal_initialize() {
                 drupal_set_database_ssl_settings
             fi
             drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
-            drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_SYNC_DIR" no
+            drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_SYNC_DIR"
             drupal_set_hash_salt
             drupal_update_database
         fi
