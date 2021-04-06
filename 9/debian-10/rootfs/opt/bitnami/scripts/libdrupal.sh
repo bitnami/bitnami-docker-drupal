@@ -150,8 +150,13 @@ drupal_initialize() {
             else
                 drupal_set_database_ssl_settings
             fi
+
+            # Drupal expects a directory for storing site configuration
+            # For more info see https://www.drupal.org/docs/configuration-management
             drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
             drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_SYNC_DIR"
+
+            # Drupal needs a hash value to build one-time login links, cancel links, form tokens, etc.
             drupal_set_hash_salt
             drupal_update_database
         fi
