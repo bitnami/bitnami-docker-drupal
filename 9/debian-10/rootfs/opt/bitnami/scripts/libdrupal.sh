@@ -289,6 +289,15 @@ drupal_site_install() {
     fi
 }
 
+########################
+# Drupal Create Config Directory
+# Globals:
+#   *
+# Arguments:
+#   None
+# Returns:
+#   None
+#########################
 drupal_create_config_directory() {
 	if [[ -z $DRUPAL_CONFIG_SYNC_DIR ]]; then
 		# In order to use Drush commands we need to have a value for
