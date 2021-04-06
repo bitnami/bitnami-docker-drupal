@@ -304,7 +304,6 @@ drupal_site_install() {
 #   None
 #########################
 drupal_create_config_directory() {
-    if [[ -z $DRUPAL_CONFIG_SYNC_DIR ]]; then
     local config_sync_dir="${DRUPAL_CONFIG_SYNC_DIR:-}"
     if is_empty_value "$config_sync_dir"; then
         config_sync_dir="${DRUPAL_BASE_DIR}/sites/default/files/config_$(generate_random_string -t alphanumeric -c 16)"
