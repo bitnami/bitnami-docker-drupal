@@ -145,19 +145,19 @@ drupal_initialize() {
             fi
         else
             info "An already initialized Drupal database was provided, configuration will be skipped"
-			if is_empty_value "$DRUPAL_DATABASE_TLS_CA_FILE"; then
-				drupal_set_database_settings
-			else
-				drupal_set_database_ssl_settings
-			fi
-			drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
-			drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_SYNC_DIR" no
-			drupal_set_hash_salt
+            if is_empty_value "$DRUPAL_DATABASE_TLS_CA_FILE"; then
+                drupal_set_database_settings
+            else
+                drupal_set_database_ssl_settings
+            fi
+            drupal_create_config_directory "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
+            drupal_conf_set "\$settings['config_sync_directory']" "$DRUPAL_CONFIG_SYNC_DIR" no
+            drupal_set_hash_salt
             drupal_update_database
         fi
 
-		info "Flushing Drupal cache"
-		drupal_flush_cache
+        info "Flushing Drupal cache"
+        drupal_flush_cache
 
         info "Persisting Drupal installation"
         persist_app "$app_name" "$DRUPAL_DATA_TO_PERSIST"
@@ -299,24 +299,24 @@ drupal_site_install() {
 #   None
 #########################
 drupal_create_config_directory() {
-	if [[ -z $DRUPAL_CONFIG_SYNC_DIR ]]; then
-		# In order to use Drush commands we need to have a value for
-		# config_sync_directory or it will throw an error so we add a
-		# temp value here first
-		drupal_conf_set "\$settings['config_sync_directory']" "temp" no
-		DRUPAL_CONFIG_SYNC_DIR="sites/default/files/config_$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")"
-		debug_execute mkdir "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
-	else
-		debug_execute mkdir "$@"
-	fi
+    if [[ -z $DRUPAL_CONFIG_SYNC_DIR ]]; then
+        # In order to use Drush commands we need to have a value for
+        # config_sync_directory or it will throw an error so we add a
+        # temp value here first
+        drupal_conf_set "\$settings['config_sync_directory']" "temp" no
+        DRUPAL_CONFIG_SYNC_DIR="sites/default/files/config_$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")"
+        debug_execute mkdir "$DRUPAL_BASE_DIR/$DRUPAL_CONFIG_SYNC_DIR"
+    else
+        debug_execute mkdir "$@"
+    fi
 }
 
 drupal_set_hash_salt() {
-	if [[ -z $DRUPAL_HASH_SALT ]]; then
-		drupal_conf_set "\$settings['hash_salt']" "$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")" no
-	else
-		drupal_conf_set "\$settings['hash_salt']" "$DRUPAL_HASH_SALT" no
-	fi
+    if [[ -z $DRUPAL_HASH_SALT ]]; then
+        drupal_conf_set "\$settings['hash_salt']" "$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")" no
+    else
+        drupal_conf_set "\$settings['hash_salt']" "$DRUPAL_HASH_SALT" no
+    fi
 }
 
 ########################
