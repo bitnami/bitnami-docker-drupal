@@ -312,13 +312,21 @@ drupal_create_config_directory() {
     ensure_dir_exists "$config_sync_dir"
 }
 
-
+########################
+# Drupal Create Hash Salt
+# Globals:
+#   *
+# Arguments:
+#   None
+# Returns:
+#   None
+#########################
 drupal_set_hash_salt() {
-    if [[ -z $DRUPAL_HASH_SALT ]]; then
-        drupal_conf_set "\$settings['hash_salt']" "$(drush eval "echo(Drupal\Component\Utility\Crypt::randomBytesBase64(55))")" no
-    else
-        drupal_conf_set "\$settings['hash_salt']" "$DRUPAL_HASH_SALT" no
+    local hash_salt="${DRUPAL_HASH_SALT:-}"
+    if is_empty_value "$hash_salt"; then
+        hash_salt="$(generate_random_string -t alphanumeric -c 32)"
     fi
+    drupal_conf_set "\$settings['hash_salt']" "$hash_salt"
 }
 
 ########################
