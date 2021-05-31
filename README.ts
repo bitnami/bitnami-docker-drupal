@@ -60,7 +60,7 @@ To use a specific version, you can pull a versioned tag. You can view the [list 
 $ docker pull bitnami/drupal:[TAG]
 ```
 
-If you wish, you can also build the image yourself.
+ you wish, you can also build the image yourself.
 
 ```console
 $ docker build -t bitnami/drupal:latest 'https://github.com/bitnami/bitnami-docker-drupal.git#master:9/debian-10'
